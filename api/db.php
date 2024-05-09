@@ -55,5 +55,23 @@ class DB
         $sql = $this->sql_all($sql, $where, $other);
         return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
+    function count($where = '', $other = '')
+    {
+        $sql = "select count(*) from `$this->table` ";
+        $sql = $this->sql_all($sql, $where, $other);
+        return $this->pdo->query($sql)->fetchColumn();
+    }
+    function max($col, $where = '', $other = '')
+    {
+        return  $this->math('max', $col, $where = '', $other = '');
+    }
+    function min($col, $where = '', $other = '')
+    {
+        return  $this->math('min', $col, $where = '', $other = '');
+    }
+    function sum($col, $where = '', $other = '')
+    {
+        return  $this->math('sum', $col, $where = '', $other = '');
+    }
 }
 $Carousel = new DB('carousel');
