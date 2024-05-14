@@ -73,5 +73,43 @@ class DB
     {
         return  $this->math('sum', $col, $where = '', $other = '');
     }
+    function save($ary)
+    {
+        if (isset($ary['id'])) {
+            $sql = "update `$this->table` set ";
+            $sql .= join(",", $this->a2s($ary));
+            $sql .= " where `id`='{$ary['id']}'";
+        } else {
+            $sql = "insert into `$this->table` ";
+            $col = "(`" . join("`,`", array_keys($ary)) . "`)";
+            $val = "('" . join("','", $ary) . "')";
+            $sql .= "{$col} valuel {$val}";
+        }
+        return $this->pdo->exec($sql);
+    }
+    function find($id)
+    {
+        $sql = "select * from `$this->table` where ";
+        if (is_array($id)) {
+            $sql .= join(" && ", $this->a2s($id));
+        } elseif (is_numeric($id)) {
+            $sql .= "`id`='{$id}'";
+        }
+        return $this->pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
+    }
+    function del($id)
+    {
+        $sql = "delete from `$this->table` where ";
+        if (is_array($id)) {
+            $sql .= join(" && ", $this->a2s($id));
+        } elseif (is_numeric($id)) {
+            $sql .= "`id`='{$id}'";
+        }
+        return $this->pdo->exec($sql);
+    }
+    function q($sql)
+    {
+        return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
 $Carousel = new DB('carousel');
